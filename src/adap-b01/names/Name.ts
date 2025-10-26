@@ -18,56 +18,75 @@ export class Name {
     private delimiter: string = DEFAULT_DELIMITER;
     private components: string[] = [];
 
+    // @methodtype constructor
     /** Expects that all Name components are properly masked */
     constructor(other: string[], delimiter?: string) {
-        throw new Error("needs implementation or deletion");
+        // copy the input array to avoid changing it later by accident
+        this.components = [...other];
+        // if no delimiter given, use default one
+        this.delimiter = delimiter ? delimiter: DEFAULT_DELIMITER;
     }
 
+    // @methodtype conversion-method
     /**
      * Returns a human-readable representation of the Name instance using user-set special characters
      * Special characters are not escaped (creating a human-readable string)
      * Users can vary the delimiter character to be used
      */
     public asString(delimiter: string = this.delimiter): string {
-        throw new Error("needs implementation or deletion");
+        // join all parts together with the chosen delimiter
+        return this.components.join(delimiter);
     }
 
+    // @methodtype conversion-method
     /** 
      * Returns a machine-readable representation of Name instance using default special characters
      * Machine-readable means that from a data string, a Name can be parsed back in
      * The special characters in the data string are the default characters
      */
     public asDataString(): string {
-        throw new Error("needs implementation or deletion");
+        // using the default delimiter (same as used internally)
+        return this.components.join(this.delimiter);
     }
 
     /** Returns properly masked component string */
     public getComponent(i: number): string {
-        throw new Error("needs implementation or deletion");
+        // return the component at index i
+        return this.components[i];
     }
 
+    // @methodtype set-method
     /** Expects that new Name component c is properly masked */
     public setComponent(i: number, c: string): void {
-        throw new Error("needs implementation or deletion");
+        // replace the value at position i with c
+        this.components[i] = c; 
     }
 
-     /** Returns number of components in Name instance */
+    // @methodtype get-method 
+    /** Returns number of components in Name instance */
      public getNoComponents(): number {
-        throw new Error("needs implementation or deletion");
+        // number of elements in the list
+        return this.components.length;
     }
 
+    // @methodtype update-method
     /** Expects that new Name component c is properly masked */
     public insert(i: number, c: string): void {
-        throw new Error("needs implementation or deletion");
+        // insert element at position i
+        this.components.splice(i, 0, c);
     }
 
+    // @methodtype update-method
     /** Expects that new Name component c is properly masked */
     public append(c: string): void {
-        throw new Error("needs implementation or deletion");
+        // add element to the end of the list
+        this.components.push(c);
     }
 
+    // @methodtype update-method
     public remove(i: number): void {
-        throw new Error("needs implementation or deletion");
+        // remove element at position i
+        this.components.splice(i, 1);
     }
 
 }

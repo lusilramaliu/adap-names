@@ -1,3 +1,4 @@
+import { C } from "vitest/dist/chunks/reporters.d.BFLkQcL6";
 import { DEFAULT_DELIMITER, ESCAPE_CHARACTER } from "../common/Printable";
 import { Name } from "./Name";
 
@@ -6,52 +7,76 @@ export class StringArrayName implements Name {
     protected delimiter: string = DEFAULT_DELIMITER;
     protected components: string[] = [];
 
+    // @methodtype constructor   
     constructor(source: string[], delimiter?: string) {
-        throw new Error("needs implementation or deletion");
+        // store a local copy so outside changes don't affect us
+        this.components = [...source];
+        // if no delimiter is passed in, fall back to default
+        this.delimiter = delimiter ?? DEFAULT_DELIMITER;
     }
 
+    // @methodtype conversion-method
     public asString(delimiter: string = this.delimiter): string {
-        throw new Error("needs implementation or deletion");
+        // create a readable string using the chosen delimiter
+        return this.components.join(delimiter);
     }
 
+    // @methodtype conversion-method
     public asDataString(): string {
-        throw new Error("needs implementation or deletion");
+        // use the internal delimiter for the machine-readable version
+        return this.components.join(this.delimiter);
     }
 
+    // @methodtype get-method
     public getDelimiterCharacter(): string {
-        throw new Error("needs implementation or deletion");
+        return this.delimiter;
     }
 
+    // @methodtype get-method
     public isEmpty(): boolean {
-        throw new Error("needs implementation or deletion");
+        return this.components.length === 0;
     }
 
+    // @methodtype get-method
     public getNoComponents(): number {
-        throw new Error("needs implementation or deletion");
+        return this.components.length;
     }
 
+    // @methodtype get-method
     public getComponent(i: number): string {
-        throw new Error("needs implementation or deletion");
+        return this.components[i];
     }
 
+    // @methodtype set-method
     public setComponent(i: number, c: string): void {
-        throw new Error("needs implementation or deletion");
+        // replace the value at the given index
+        this.components[i] = c;
     }
 
+    // @methodtype update-method
     public insert(i: number, c: string): void {
-        throw new Error("needs implementation or deletion");
+        // insert new component before index i
+        this.components.splice(i, 0, c);
     }
 
+    // @methodtype update-method
     public append(c: string): void {
-        throw new Error("needs implementation or deletion");
+        // add new component at the end
+        this.components.push(c);
     }
 
+    // @methodtype update-method
     public remove(i: number): void {
-        throw new Error("needs implementation or deletion");
+        // remove the component at index i
+        this.components.splice(i, 1);
     }
 
+    // @methodtype update-method
     public concat(other: Name): void {
-        throw new Error("needs implementation or deletion");
+        // append each component from 'other' in order
+        for (let i = 0; i < other.getNoComponents(); i++) {
+            this.components.push(other.getComponent(i));
+        }
     }
 
 }

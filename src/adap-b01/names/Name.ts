@@ -1,4 +1,4 @@
-export const DEFAULT_DELIMITER: string = '.';
+ export const DEFAULT_DELIMITER: string = '.';
 export const ESCAPE_CHARACTER = '\\';
 
 /**

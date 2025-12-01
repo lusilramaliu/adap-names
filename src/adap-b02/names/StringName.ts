@@ -90,7 +90,7 @@ export class StringName implements Name {
 
     // @methodtype update-method
     public concat(other: Name): void {
-        for (let i = 0; i < other.getNoComponents(); i++);
+        for (let i = 0; i < other.getNoComponents(); i++)
         {
             this.append(other.getComponent(i));
         }

@@ -1,33 +1,19 @@
-import { Name } from "../names/Name";
-import { StringName } from "../names/StringName";
 import { Directory } from "./Directory";
 
+/**
+ * Root of the filesystem tree.
+ * Has no real parent; we treat parentNode specially.
+ */
 export class RootNode extends Directory {
+  constructor() {
+    // Root has no parent → pass null
+    super("", null);
+    // Conceptually, make root its own parent to avoid null checks elsewhere
+    this.parentNode = this;
+  }
 
-    protected static ROOT_NODE: RootNode = new RootNode();
-
-    public static getRootNode() {
-        return this.ROOT_NODE;
-    }
-
-    constructor() {
-        super("", new Object as Directory);
-    }
-
-    protected initialize(pn: Directory): void {
-        this.parentNode = this;
-    }
-
-    public getFullName(): Name {
-        return new StringName("", '/');
-    }
-
-    public move(to: Directory): void {
-        // null operation
-    }
-
-    protected doSetBaseName(bn: string): void {
-        // null operation
-    }
-
+  // basename of root is empty string
+  public override getBaseName(): string {
+    return "";
+  }
 }

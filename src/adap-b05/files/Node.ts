@@ -1,63 +1,69 @@
-import { IllegalArgumentException } from "../common/IllegalArgumentException";
 import { InvalidStateException } from "../common/InvalidStateException";
+import { ServiceFailureException } from "../common/ServiceFailureException";
 
-import { Name } from "../names/Name";
-import { Directory } from "./Directory";
-
+/**
+ * Base class for all filesystem nodes (files, directories, links, root).
+ */
 export class Node {
+  protected baseName: string;
+  protected parentNode: Directory | null;
 
-    protected baseName: string = "";
-    protected parentNode: Directory;
+  constructor(bn: string, pn: Directory | null) {
+    this.baseName = bn;
+    this.parentNode = pn;
 
-    constructor(bn: string, pn: Directory) {
-        this.doSetBaseName(bn);
-        this.parentNode = pn; // why oh why do I have to set this
-        this.initialize(pn);
+    // Only register as child if there is a real parent (root has none)
+    if (pn !== null) {
+      pn.addChildNode(this);
+    }
+  }
+
+  public getBaseName(): string {
+    return this.doGetBaseName();
+  }
+
+  protected doGetBaseName(): string {
+    return this.baseName;
+  }
+
+  public rename(bn: string): void {
+    this.baseName = bn;
+  }
+
+  public getParentNode(): Directory | null {
+    return this.parentNode;
+  }
+
+  /**
+   * Default leaf search implementation.
+   * - checks only this node
+   * - wraps InvalidStateException into ServiceFailureException
+   */
+  public findNodes(bn: string): Set<Node> {
+    const result = new Set<Node>();
+
+    try {
+      // Leaf check: does this node match the name we are searching for
+      if (this.getBaseName() === bn) {
+        result.add(this);
+      }
+    } catch (ex) {
+      // Buggy nodes (like BuggyFile) may throw InvalidStateException
+      // From the outside, this must appear as a service failure
+      if (ex instanceof InvalidStateException) {
+        throw new ServiceFailureException("search failed", ex);
+      }
+      throw ex;
     }
 
-    protected initialize(pn: Directory): void {
-        this.parentNode = pn;
-        this.parentNode.addChildNode(this);
-    }
+    return result;
+  }
+}
 
-    public move(to: Directory): void {
-        this.parentNode.removeChildNode(this);
-        to.addChildNode(this);
-        this.parentNode = to;
-    }
-
-    public getFullName(): Name {
-        const result: Name = this.parentNode.getFullName();
-        result.append(this.getBaseName());
-        return result;
-    }
-
-    public getBaseName(): string {
-        return this.doGetBaseName();
-    }
-
-    protected doGetBaseName(): string {
-        return this.baseName;
-    }
-
-    public rename(bn: string): void {
-        this.doSetBaseName(bn);
-    }
-
-    protected doSetBaseName(bn: string): void {
-        this.baseName = bn;
-    }
-
-    public getParentNode(): Directory {
-        return this.parentNode;
-    }
-
-    /**
-     * Returns all nodes in the tree that match bn
-     * @param bn basename of node being searched for
-     */
-    public findNodes(bn: string): Set<Node> {
-        throw new Error("needs implementation or deletion");
-    }
-
+/**
+ * Minimal interface that parent directories must implement.
+ * Implemented by Directory and RootNode (through inheritance).
+ */
+export interface Directory {
+  addChildNode(node: Node): void;
 }
